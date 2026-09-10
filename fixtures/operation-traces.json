@@ -1,0 +1,79 @@
+{
+  "disclaimer": "合成测试轨迹，不是用户数据、临床数据或真实操作者结果。",
+  "regionRules": [
+    { "id": "a", "name": "计划区域A", "ruleType": "allowed", "status": "active", "description": "合成测试规则" },
+    { "id": "b", "name": "计划区域B", "ruleType": "allowed", "status": "active", "description": "合成测试规则" },
+    { "id": "c", "name": "计划区域C", "ruleType": "allowed", "status": "active", "description": "合成测试规则" },
+    { "id": "r", "name": "预设禁区R", "ruleType": "restricted", "status": "review_required", "description": "合成测试规则" }
+  ],
+  "traces": [
+    {
+      "id": "T1",
+      "name": "完整覆盖，无偏差",
+      "treatmentPlan": { "id": "trace-plan-t1", "operator": "synthetic", "treatmentType": "trace-demo", "allowedRegions": ["a", "b", "c"], "restrictedRegions": ["r"], "createdAt": "2026-01-01T00:00:00.000Z", "notes": "synthetic" },
+      "operationEvents": [
+        { "id": "t1-e1", "treatmentPlanId": "trace-plan-t1", "eventType": "region_completed", "regionId": "a", "timestamp": "2026-01-01T00:00:01.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t1-e2", "treatmentPlanId": "trace-plan-t1", "eventType": "region_completed", "regionId": "b", "timestamp": "2026-01-01T00:00:02.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t1-e3", "treatmentPlanId": "trace-plan-t1", "eventType": "region_completed", "regionId": "c", "timestamp": "2026-01-01T00:00:03.000Z", "source": "simulation", "metadata": {} }
+      ],
+      "expectedCoverage": 100,
+      "expectedMissedRegions": [],
+      "expectedRestrictedAlerts": 0,
+      "expectedQualityLog": { "missedCount": 0, "totalEventCount": 3, "regionDeviationRate": 0, "deviationEventRate": 0 }
+    },
+    {
+      "id": "T2",
+      "name": "漏打一个区域",
+      "treatmentPlan": { "id": "trace-plan-t2", "operator": "synthetic", "treatmentType": "trace-demo", "allowedRegions": ["a", "b", "c"], "restrictedRegions": ["r"], "createdAt": "2026-01-01T00:00:00.000Z", "notes": "synthetic" },
+      "operationEvents": [
+        { "id": "t2-e1", "treatmentPlanId": "trace-plan-t2", "eventType": "region_completed", "regionId": "a", "timestamp": "2026-01-01T00:00:01.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t2-e2", "treatmentPlanId": "trace-plan-t2", "eventType": "region_completed", "regionId": "b", "timestamp": "2026-01-01T00:00:02.000Z", "source": "simulation", "metadata": {} }
+      ],
+      "expectedCoverage": 67,
+      "expectedMissedRegions": ["计划区域C"],
+      "expectedRestrictedAlerts": 0,
+      "expectedQualityLog": { "missedCount": 1, "totalEventCount": 2, "regionDeviationRate": 33.3, "deviationEventRate": 0 }
+    },
+    {
+      "id": "T3",
+      "name": "漏打多个区域",
+      "treatmentPlan": { "id": "trace-plan-t3", "operator": "synthetic", "treatmentType": "trace-demo", "allowedRegions": ["a", "b", "c"], "restrictedRegions": ["r"], "createdAt": "2026-01-01T00:00:00.000Z", "notes": "synthetic" },
+      "operationEvents": [
+        { "id": "t3-e1", "treatmentPlanId": "trace-plan-t3", "eventType": "region_completed", "regionId": "a", "timestamp": "2026-01-01T00:00:01.000Z", "source": "simulation", "metadata": {} }
+      ],
+      "expectedCoverage": 33,
+      "expectedMissedRegions": ["计划区域B", "计划区域C"],
+      "expectedRestrictedAlerts": 0,
+      "expectedQualityLog": { "missedCount": 2, "totalEventCount": 1, "regionDeviationRate": 66.7, "deviationEventRate": 0 }
+    },
+    {
+      "id": "T4",
+      "name": "疑似进入禁区",
+      "treatmentPlan": { "id": "trace-plan-t4", "operator": "synthetic", "treatmentType": "trace-demo", "allowedRegions": ["a", "b", "c"], "restrictedRegions": ["r"], "createdAt": "2026-01-01T00:00:00.000Z", "notes": "synthetic" },
+      "operationEvents": [
+        { "id": "t4-e1", "treatmentPlanId": "trace-plan-t4", "eventType": "region_completed", "regionId": "a", "timestamp": "2026-01-01T00:00:01.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t4-e2", "treatmentPlanId": "trace-plan-t4", "eventType": "region_completed", "regionId": "b", "timestamp": "2026-01-01T00:00:02.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t4-e3", "treatmentPlanId": "trace-plan-t4", "eventType": "region_completed", "regionId": "c", "timestamp": "2026-01-01T00:00:03.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t4-e4", "treatmentPlanId": "trace-plan-t4", "eventType": "restricted_area", "regionId": "r", "timestamp": "2026-01-01T00:00:04.000Z", "source": "simulation", "metadata": {} }
+      ],
+      "expectedCoverage": 100,
+      "expectedMissedRegions": [],
+      "expectedRestrictedAlerts": 1,
+      "expectedQualityLog": { "missedCount": 0, "totalEventCount": 4, "regionDeviationRate": 0, "deviationEventRate": 25 }
+    },
+    {
+      "id": "T5",
+      "name": "重复操作且同时漏打",
+      "treatmentPlan": { "id": "trace-plan-t5", "operator": "synthetic", "treatmentType": "trace-demo", "allowedRegions": ["a", "b", "c"], "restrictedRegions": ["r"], "createdAt": "2026-01-01T00:00:00.000Z", "notes": "synthetic" },
+      "operationEvents": [
+        { "id": "t5-e1", "treatmentPlanId": "trace-plan-t5", "eventType": "region_completed", "regionId": "a", "timestamp": "2026-01-01T00:00:01.000Z", "source": "simulation", "metadata": {} },
+        { "id": "t5-e2", "treatmentPlanId": "trace-plan-t5", "eventType": "region_completed", "regionId": "a", "timestamp": "2026-01-01T00:00:02.000Z", "source": "simulation", "metadata": { "repeat": true } },
+        { "id": "t5-e3", "treatmentPlanId": "trace-plan-t5", "eventType": "region_completed", "regionId": "b", "timestamp": "2026-01-01T00:00:03.000Z", "source": "simulation", "metadata": {} }
+      ],
+      "expectedCoverage": 67,
+      "expectedMissedRegions": ["计划区域C"],
+      "expectedRestrictedAlerts": 0,
+      "expectedQualityLog": { "missedCount": 1, "totalEventCount": 3, "regionDeviationRate": 33.3, "deviationEventRate": 0 }
+    }
+  ]
+}

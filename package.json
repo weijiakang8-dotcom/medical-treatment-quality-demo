@@ -1,0 +1,9 @@
+{
+  "name": "treatment-quality-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:deployment": "node deployment.test.mjs",
+    "test:ai": "node ai-evaluation.test.mjs"
+  }
+}

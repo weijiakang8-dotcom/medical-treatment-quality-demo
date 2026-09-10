@@ -1,0 +1,18 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+const read=name=>readFile(new URL(name,import.meta.url),"utf8");
+const [html,v2,css,v2css,tokens,app,v2app]=await Promise.all([read("./index.html"),read("./v2/index.html"),read("./styles.css"),read("./v2/styles.css"),read("./design-tokens.css"),read("./app.js"),read("./v2/app.js")]);
+const results=[];const test=(name,fn)=>{try{fn();results.push({test:name,status:"通过"})}catch(e){results.push({test:name,status:"失败",error:e.message})}};
+test("01 设计令牌检查",()=>{for(const token of ["--color-brand-50","--color-brand-500","--color-text-primary","--color-bg-page","--font-size-md","--space-4","--radius-md","--shadow-md","--sidebar-width","--header-height","--content-max-width"])assert.ok(tokens.includes(token))});
+test("02 组件复用检查",()=>{for(const name of ["sidebar","breadcrumb","global-search","empty-state","result-box"])assert.ok(html.includes(name)||v2.includes(name));assert.ok(css.includes(".sidebar")&&v2css.includes(".sidebar"))});
+test("03 技术词汇扫描",()=>{const visible=v2;for(const word of ["Mock","Provider","Repository","Adapter","OperationEvent","AlertEvent","Schema","API","沙盒","工程验证"])assert.equal(visible.includes(word),false,word)});
+test("04 业务文案检查",()=>{for(const text of ["工作台","新建治疗记录","确认本次治疗范围","记录治疗过程","治疗质量报告","返回工作台"])assert.ok(html.includes(text));for(const text of ["机构与人员","患者服务","数据接入","智能辅助","经营收益测算","服务评价","操作记录","数据管理"])assert.ok(v2.includes(text))});
+test("05 桌面端检查",()=>{assert.ok(css.includes("--sidebar-width"));assert.ok(css.includes("margin-left:var(--sidebar-width)"))});
+test("06 375px移动端检查",()=>{assert.match(css,/@media\(max-width:900px\)/);assert.ok(html.includes('id="nav-drawer"'));assert.ok(app.includes("closeDrawer"))});
+test("07 768px平板端检查",()=>{assert.match(css,/@media\(max-width:900px\)/);assert.match(v2css,/@media\(max-width:900px\)/)});
+test("08 键盘导航检查",()=>{assert.ok(html.includes("跳过导航"));assert.ok(css.includes(":focus-visible"));assert.ok(app.includes('event.key === "Escape"'))});
+test("09 焦点状态检查",()=>{assert.ok(css.includes("outline:3px"));assert.ok(app.includes('$("#drawer-close").focus()'));assert.ok(app.includes('$("#confirm-action").focus()'))});
+test("10 空状态检查",()=>{for(const text of ["暂无治疗记录","暂无数据","暂无操作记录"])assert.ok(html.includes(text)||v2.includes(text))});
+test("11 错误和加载状态检查",()=>{assert.ok(css.includes(".loading-state")&&css.includes(".error-state"));assert.ok(v2app.includes("导入失败"));assert.ok(app.includes("showToast"))});
+test("12 免责声明检查",()=>{for(const text of ["不用于真实医疗决策","不连接真实设备"])assert.ok(html.includes(text)||v2.includes(text));assert.ok(v2.includes("结果需人工确认")||v2.includes("所有结果需人工确认"))});
+console.table(results);const failed=results.filter(x=>x.status==="失败");console.log(JSON.stringify({total:results.length,passed:results.length-failed.length,failed:failed.length},null,2));if(failed.length)process.exitCode=1;

@@ -1,0 +1,23 @@
+import assert from "node:assert/strict";
+import { access, readFile } from "node:fs/promises";
+import { AIProviderService, DeviceImportService, EventNormalizer, TreatmentContextService, TreatmentWorkflowService } from "./integration.js";
+import { CSVDeviceAdapter, FutureVisionProvider, MemoryStore, MockAIProvider, V2_KEYS } from "./v2/modules.js";
+import { STORAGE_KEYS } from "./modules.js";
+const results=[];async function test(name,fn){try{await fn();results.push({test:name,status:"通过"})}catch(e){results.push({test:name,status:"失败",error:e.message})}}
+const html=await readFile(new URL("./index.html",import.meta.url),"utf8"),v2html=await readFile(new URL("./v2/index.html",import.meta.url),"utf8"),portfolio=await readFile(new URL("./FINAL-PORTFOLIO.md",import.meta.url),"utf8");
+const plan={id:"p1",ruleVersion:"v1",operator:"synthetic",treatmentType:"demo",allowedRegions:["a","b"],restrictedRegions:["r"],notes:"synthetic"};const rules=[{id:"a",name:"A",ruleType:"allowed"},{id:"b",name:"B",ruleType:"allowed"},{id:"r",name:"R",ruleType:"restricted"}];
+await test("01 统一首页五入口",()=>{for(const text of ["进入核心模拟原型","进入V2沙盒扩展","查看FDE验证摘要","查看完整作品集提案","查看数据来源与限制"])assert.ok(html.includes(text))});
+await test("02 V1入口文件可访问",()=>access(new URL("./index.html",import.meta.url)));
+await test("03 V2入口文件可访问",()=>access(new URL("./v2/index.html",import.meta.url)));
+await test("04 V1数据不被V2污染",()=>{const store=new MemoryStore();for(const key of Object.values(V2_KEYS))store.setItem(key,"[]");for(const key of Object.values(STORAGE_KEYS))assert.equal(store.getItem(key),null)});
+await test("05 V2数据不被V1污染",()=>{assert.ok(Object.values(V2_KEYS).every(k=>k.startsWith("v2_")));assert.ok(Object.values(STORAGE_KEYS).every(k=>!k.startsWith("v2_")))});
+let deviceOperation;
+await test("06 DeviceEvent转换OperationEvent",()=>{const csv="eventId,deviceId,treatmentId,regionId,eventType,energy,depth,shotCount,timestamp\ne1,d1,t1,a,region_completed,1,2,3,2026-01-01T00:00:00Z";const imported=new DeviceImportService(new CSVDeviceAdapter()).import(csv,plan.id);deviceOperation=imported.operationEvents[0];assert.equal(deviceOperation.source,"device_mock");assert.equal(deviceOperation.treatmentPlanId,plan.id)});
+let mockOperation;
+await test("07 MockAI保留合成标记并进入事件链",()=>{const service=new AIProviderService(new MockAIProvider());const value=service.generateOperationEvent({id:"ai1"},{treatmentPlanId:plan.id,eventType:"restricted_area",regionId:"r",timestamp:"2026-01-01T00:00:01Z"});mockOperation=value.event;assert.equal(value.result.isSynthetic,true);assert.equal(mockOperation.metadata.isSynthetic,true);assert.equal(mockOperation.source,"video_mock")});
+await test("08 Future Provider不会误标已实现",()=>{const value=new AIProviderService(new FutureVisionProvider()).generateOperationEvent({id:"v1"},{treatmentPlanId:plan.id,eventType:"region_completed",regionId:"a",timestamp:"2026-01-01T00:00:00Z"});assert.equal(value.result.status,"not_implemented");assert.equal(value.event,null)});
+await test("09 QualityLog保留事件来源",()=>{const manual={id:"m1",treatmentPlanId:plan.id,eventType:"region_completed",regionId:"b",timestamp:"2026-01-01T00:00:02Z",source:"manual",metadata:{}};const run=new TreatmentWorkflowService().run({plan,rules,events:[deviceOperation,mockOperation,manual]});assert.deepEqual(run.qualityLog.eventSources,["device_mock","video_mock","manual"]);assert.equal(run.qualityLog.sourceBreakdown.video_mock,1);assert.equal(run.qualityLog.suspectedRestrictedCount,1)});
+await test("10 Treatment只引用V1日志",()=>{const log={treatmentPlanId:"p1",coverageRate:100};const linked=new TreatmentContextService().linkQualityLog({id:"t1",organizationId:"o1"},log);assert.equal(linked.v1QualityLogId,"p1");assert.equal(linked.linkType,"reference_only");assert.equal("coverageRate" in linked,false)});
+await test("11 V1和V2作品集内容存在",async()=>{for(const text of ["V1工程验证汇总","V2沙盒验证汇总","V2扩展验证的是架构可扩展性"])assert.ok(portfolio.includes(text));for(const file of ["UNIFIED-ARCHITECTURE.md","UNIFIED-DATA-FLOW.md","STORAGE-SCHEMA.md","AI-PORTFOLIO.md","V1-V2-INTEGRATION-REPORT.md"])await access(new URL(`./${file}`,import.meta.url))});
+await test("12 免责声明与来源标签完整",()=>{for(const text of ["不用于真实医疗决策","不是半岛医疗官方项目"])assert.ok(html.includes(text));assert.ok(v2html.includes("不接触真实患者"));for(const label of ["[工程验证]","[沙盒演示]","[合成测试数据]","[待真实环境验证]"])assert.ok(html.includes(label)||portfolio.includes(label))});
+console.table(results);const failed=results.filter(x=>x.status==="失败");console.log(JSON.stringify({total:results.length,passed:results.length-failed.length,failed:failed.length},null,2));if(failed.length)process.exitCode=1;

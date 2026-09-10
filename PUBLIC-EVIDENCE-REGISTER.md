@@ -1,0 +1,26 @@
+# 公开证据登记册
+
+> 检索日期：2026-09-10。项目为候选人个人自驱作品集，不代表半岛医疗。以下仅登记实际打开并核对原文的公开来源；公开论文不等于本原型已获临床验证，监管指导也不等于本原型已经合规。
+
+| 编号 | 来源类型 | 标题 | 作者/机构 | 发布日期 | URL | 支持的结论 | 原文摘录 | 证据强度 | 限制 | 可用于作品集 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| PE-01 | 开放全文论文/试点病例研究 | Hi5 Protocol for the Use of Microfocused Ultrasound with Visualization | Niamh Corduff, Stephen Lowe | 2023-08-14 | https://pmc.ncbi.nlm.nih.gov/articles/PMC10424899/ | 公开研究中的治疗计划可包含区域网格、深浅层、线数、间距和方向，并记录疼痛、疗效评价与不良事件。 | “Participants’ faces and necks were individually assessed and mapped by marking with a treatment grid…”；“one superficial pass … and one deep pass … average of 280 lines … spaced approximately 5-mm apart and vectored…” | 中 | 仅10例纳入分析、无对照；作者与Merz存在关系，写作编辑由Merz Asia Pacific资助；不能证明本MVP有效或操作追溯能改善疗效。 | 是，须连同限制 |
+| PE-02 | 开放全文论文/前瞻性病例系列 | Single Treatment, Single Depth Superficial Microfocused Ultrasound with Visualization for Rhytid Improvement | Stephen Lowe | 2021-07-13 | https://pmc.ncbi.nlm.nih.gov/articles/PMC8277253/ | 治疗区域、线数、频率、能量、焦深和线间距是公开研究中被明确记录的操作变量；疗效与不良事件采用独立量表/随访记录。 | “up to 340 lines (periorbital 120, perioral 100, and accordion 120)”；“10 MHz, source energy 0.18J and a focal depth of 1.5 mm… each spaced row 2–3 mm apart.” | 中 | 9名受试者、单中心、无并行对照；研究获Merz支持；不能外推为因果关系，也不能证明本原型的区域规则符合医学要求。 | 是，须连同限制 |
+| PE-03 | 专家共识论文 | Optimizing Patient Outcomes by Customizing Treatment With Microfocused Ultrasound With Visualization | Fabi, Joseph, Sevi, Green, Peterson | 2019-05 | https://jddonline.com/articles/optimizing-patient-outcomes-by-customizing-treatment-with-microfocused-ultrasound-with-visualization-S1545961619P0426X | 专家讨论将影像、线数、能量和深度用于个体化治疗计划，说明这些变量适合成为待内部确认的结构化字段。 | 页面摘要涉及影像、治疗线数、能量、深度与个体化计划。 | 中低 | 专家共识，不是验证本MVP的实验；网页抓取冗长且关键段落定位稳定性较低；不能用于声称追溯一定改善疗效。 | 仅作辅助背景，不作为关键证据 |
+| PE-04 | 官方监管指导页 | General Principles of Software Validation | U.S. FDA | 2002-01（页面2019更新） | https://www.fda.gov/regulatory-information/search-fda-guidance-documents/general-principles-software-validation | 软件验证应采用一般验证原则；本项目采用确定性测试、预期/实际结果和可重复回放是合理的工程准备活动。 | “outlines general validation principles… applicable to the validation of medical device software or… software used to design, develop, or manufacture medical devices.” | 高（方法来源） | 仅为通用指导，不代表本原型满足FDA要求或属于已验证医疗器械软件。 | 是，限定为方法参考 |
+| PE-05 | 官方监管指导页 | Applying Human Factors and Usability Engineering to Medical Devices | U.S. FDA / CDRH | 页面标注2026-08 | https://www.fda.gov/regulatory-information/search-fda-guidance-documents/applying-human-factors-and-usability-engineering-medical-devices | 真正的人因/可用性结论需要针对预期用户、用途和使用环境开展评估；当前单人走查不能替代真实操作者研究。 | “appropriate human factors and usability engineering processes… intended users, uses and use environments”；“assess and reduce risks associated with medical device use.” | 高（方法来源） | 当前页面日期晚于本项目早期资料；不是对本原型的认可，也不提供本项目的真实用户结果。 | 是，支持证据边界 |
+| PE-06 | 官方监管指导页 | Content of Premarket Submissions for Device Software Functions | U.S. FDA | 2023-06 | https://www.fda.gov/regulatory-information/search-fda-guidance-documents/content-premarket-submissions-device-software-functions | 软件功能评价需要结构化文档与测试证据；本项目的接口、测试夹具和日志属于前期工程材料，不等于达到申报标准。 | “recommended documentation for premarket submissions for FDA’s evaluation of the safety and effectiveness of device software functions.” | 高（方法来源） | 适用于监管提交语境；本MVP非申报产品，不能声称已满足其全部文档要求。 | 是，限定为方法参考 |
+| PE-07 | 官方监管指导页 | Computer Software Assurance for Production and Quality Management System Software | U.S. FDA | 2026-02 | https://www.fda.gov/regulatory-information/search-fda-guidance-documents/computer-software-assurance-production-and-quality-management-system-software | 风险导向、按需增加严谨度并选用多种测试活动，是软件保证的一种公开方法。 | “describes a risk-based approach to establish confidence… identify where additional rigor may be appropriate, and various methods and testing activities…” | 高（方法来源） | 面向生产/QMS软件，不直接适用于本原型用途；仅借鉴风险导向测试思想。 | 是，注明适用限制 |
+| PE-08 | 官方监管指导 | Requirements of the manufacturer’s PMS system | UK MHRA | 2025-09-05更新 | https://www.gov.uk/government/publications/medical-devices-post-market-surveillance-requirements/requirements-of-the-manufacturers-pms-system | 上市后系统需规划信息收集、分析和反馈；也说明当前离线测试不能替代真实使用反馈。 | “process in place for gathering and analysing feedback and complaints”；PMS计划至少包括“objectives… processes to gather information… methods of data analysis”. | 高（方法来源） | 面向英国医疗器械上市后监管；本原型未上市、未部署，不可据此声称合规。 | 是，支持未来影子验证需求 |
+| PE-09 | 企业官网公开页 | 四重验真 | 深圳半岛医疗集团股份有限公司 | 页面未标明发布日期 | https://www.peninsula-med.com/authenticity.html?loc=0 | `[公开来源，不代表半岛授权或内部确认]` 页面公开设备、治疗头、合作机构、推荐医师查询与动态码验真。 | “设备验真”“治疗头验真”“合作机构查询”“医师查询”。 | 中（企业自述） | 不证明机构端过程记录能力、追溯缺口或本项目价值。 | 是，作为半岛公开背景 |
+| PE-10 | 公开媒体报道 | 半岛医疗两款械三产品发布 助力国产医美迈向规范化发展新阶段 | 新华网 | 2025-12-18 | https://www.xinhuanet.com/digital/20251218/34104f57f83b44acb6262a0bbc041f76/c.html | `[公开来源，不代表半岛授权或内部确认]` 报道相关产品认证，并引述企业负责人提及智能超声影像系统。 | “半岛大超炮的TEET影子®孪生能效技术和智能超声影像系统…” | 中（公开报道含企业陈述） | 发布于2025-12，不能倒推更早状态；不证明机构端追溯缺口、系统接口或MVP有效。 | 是，连同日期与限制 |
+
+## 公开投诉与用户评价检索结论
+
+检索到 RealSelf、BBB 和 FDA MAUDE 的相关结果入口，但本次环境中 RealSelf 返回访问限制，FDA MAUDE 详情页触发反滥用页面，BBB结果未形成可稳定核验的原文样本。搜索结果摘要不作为完整证据。因此当前**未找到足够、可访问且可系统编码的公开投诉/评价证据**，不填写案例频次，不引用受限页面个案，不声称任何问题高频。
+
+## 可支持与不可支持
+
+可支持：公开研究确实把治疗区域、网格、深度、能量、线数/间距/路径、疗效评价和不良事件作为可记录变量；软件测试可采用可追踪、风险导向、预期对实际和人因边界明确的方法。
+
+不可支持：机构端一定存在追溯空白；操作偏差必然导致疗效不一致；疗效不一致导致复购下降；本原型能减少真实偏差；本原型满足任何法规；半岛现有系统具备或缺少何种能力。以上均为 `[候选人的推断]` 或 `[待半岛内部验证]`。
